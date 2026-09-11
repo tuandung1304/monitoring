@@ -47,9 +47,9 @@ kubectl create configmap k6-script \
 echo "==> Applying manifests"
 kubectl apply -k "${ROOT_DIR}/k8s"
 
-echo "==> Restarting prometheus/grafana so config map edits take effect"
-echo "    (mounted config map changes don't trigger a rollout on their own)"
-kubectl rollout restart deployment/prometheus deployment/grafana
+echo "==> Restarting backend/prometheus/grafana so image and config map edits take effect"
+echo "    (same image tag / mounted config map changes don't trigger a rollout on their own)"
+kubectl rollout restart deployment/backend deployment/prometheus deployment/grafana
 
 echo "==> Waiting for rollouts"
 kubectl rollout status deployment/postgres
