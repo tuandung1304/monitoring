@@ -47,6 +47,9 @@ services:
     environment:
       - PORT=4000
       - DATABASE_URL=postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app_password}@postgres:5432/${POSTGRES_DB:-loadtest}
+      # Fraction (0-1) of API requests to fail with a random 5xx, e.g. 0.03 for ~3%.
+      # Leave at 0 for normal runs; set via `CHAOS_5XX_RATE=0.03 docker compose ...`.
+      - CHAOS_5XX_RATE=${CHAOS_5XX_RATE:-0}
     ports:
       - '4000:4000'
     restart: unless-stopped

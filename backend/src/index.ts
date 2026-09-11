@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { metricsMiddleware } from './middleware/metrics'
+import { chaosMiddleware } from './middleware/chaos'
 import { register } from './metrics'
 import { healthRouter } from './routes/health'
 import { usersRouter } from './routes/users'
@@ -13,6 +14,8 @@ app.use(express.json())
 app.use(metricsMiddleware)
 
 app.use(healthRouter)
+
+app.use(chaosMiddleware)
 app.use(usersRouter)
 app.use(productsRouter)
 app.use(ordersRouter)
