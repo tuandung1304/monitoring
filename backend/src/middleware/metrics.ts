@@ -1,6 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import { httpRequestDurationSeconds, httpRequestsTotal } from '../metrics'
 
+function normalizeUnmatchedPath(path: string): string {
+  return path
+    .split('/')
+    .map(segment => (/^\d+$/.test(segment) ? ':id' : segment))
+    .join('/')
+}
+
 export function metricsMiddleware(
   req: Request,
   res: Response,
@@ -9,10 +16,9 @@ export function metricsMiddleware(
   const endTimer = httpRequestDurationSeconds.startTimer()
 
   res.on('finish', () => {
-    // req.route is only set once Express has matched a route, so this also
-    // covers 404s (falls back to the raw path) without exploding cardinality
-    // on truly unmatched paths thanks to the catch-all 404 handler.
-    const route = req.route?.path ? `${req.baseUrl}${req.route.path}` : req.path
+    const route = req.route?.path
+      ? `${req.baseUrl}${req.route.path}`
+      : normalizeUnmatchedPath(req.path)
     const labels = {
       method: req.method,
       route,
