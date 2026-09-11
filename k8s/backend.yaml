@@ -27,6 +27,9 @@ spec:
                 secretKeyRef:
                   name: postgres-credentials
                   key: DATABASE_URL
+            # Fraction (0-1) of API requests to fail with a random 5xx, e.g. 0.03 for ~3%.
+            - name: CHAOS_5XX_RATE
+              value: '0.02'
           ports:
             - containerPort: 4000
           readinessProbe:
